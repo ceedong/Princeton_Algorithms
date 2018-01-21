@@ -1,43 +1,32 @@
 import edu.princeton.cs.algs4.StdOut;
 import edu.princeton.cs.algs4.In;
-import java.lang.Math;
 import java.util.Queue;
 import java.util.LinkedList;
 public class Board {
-    private int[][] blocks;
-    private int N;
-    private int priorityNum; // which should be compared by the comparator
+    private final int[][] blocks;
+    private final int N;
+    private final int countHamming;
+    private final int countManhattan;
     public Board(int[][] blocks) {
-        this.blocks = blocks; //constructor
-        this.N = blocks.length;
-        this.priorityNum = this.manhattan();
-        // test for the constructor
-        for (int i = 0; i < this.blocks.length; i++) {
-            for (int j = 0; j < this.blocks[0].length; j++) {
-                // StdOut.println(this.blocks[i][j]);
-            }
-        }
-    }           // construct a board from an n-by-n array of blocks
-                // (where blocks[i][j] = block in row i, column j)
-    public int dimension() {
-        return N;
-    }                 // board dimension n
-    public int hamming() {
+        this.blocks = blocks.clone(); // constructor
+        this.N = blocks.length; 
+        
+        // count for the Hamming distance
         int count = 0; // to count for the number of blocks out of place
         for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks[0].length; j++) {
                 if (i == blocks.length -1 && j == blocks.length -1) break;
                 else if (blocks[i][j] != (blocks.length * i + j + 1)) {
                 count++;
-                System.out.println(blocks[i][j] + "!!!");
+                 // System.out.println(blocks[i][j] + "!!!");
                 }
             }
         }
-        // StdOut.println(count);
-        return count;
-    }                  
-    public int manhattan() {
-        int count = 0; // to record the manhattan distance
+        
+        this.countHamming = count;
+        
+        
+        int count2 = 0; // to record the manhattan distance
         for (int i = 0; i < blocks.length; i++) {
             for (int j = 0; j < blocks[0].length; j++) {
                 // we need to calculate the actual distance and the desired distance for the number
@@ -45,17 +34,32 @@ public class Board {
                 if (number == 0) continue;
                 int row = (number % N == 0) ? number / N - 1 : number / N;
                 // StdOut.println("The row for number  " + number + " is:" + row);
-                int col = (number % N == 0) ? N - 1: number % N - 1;
+                int col = (number % N == 0) ? N - 1 : number % N - 1;
                 // StdOut.println("The col for number  " + number + " is:" + col);
-                count += Math.abs(i - row) + Math.abs(j - col);
+                count2 += Math.abs(i - row) + Math.abs(j - col);
                 // StdOut.println("The count for number  " + number + " is:" + Math.abs(i - row) + Math.abs(j - col));
                 // StdOut.println("The current coordinates are " + i + ", " + j);
             }
         }
-        // StdOut.println(count);
         
-        return count;
-    }             
+        this.countManhattan = count2;
+        
+    }           
+    
+    // construct a board from an n-by-n array of blocks
+                // (where blocks[i][j] = block in row i, column j)
+    public int dimension() {
+        return N;
+    }                 // board dimension n
+    
+    public int hamming() {
+        return countHamming;
+    }    
+    
+    public int manhattan() { 
+        return countManhattan;
+    }  
+    
     public boolean isGoal() {
         int count = 0;
         for (int i = 0; i < blocks.length; i++) {
@@ -63,13 +67,13 @@ public class Board {
                 int number = blocks[i][j];
                 if (number == 0) continue;
                 int row = (number % N == 0) ? number / N - 1 : number / N;
-                int col = (number % N == 0) ? N - 1: number % N - 1;
+                int col = (number % N == 0) ? N - 1 : number % N - 1;
                 if (row != i || col != j) return false;
                 count++;
             }
         }
         if (count == N * N -1) return true;
-        else return false;
+        return false;
     }
     
     public Board twin() {
@@ -180,29 +184,19 @@ public class Board {
         return result;
     }
     
-    //setter and getter for the private number priorityNum:
-    public int getPrior() {
-        return this.priorityNum;
-    }
-    
-    public void setPrior(int num) {
-        this.priorityNum = num;
-    }
-    
     public static void main(String[] args) {    
-        In in = new In(args[0]);
-        int n = in.readInt();
-        int[][] blocks = new int[n][n];
-        for (int i = 0; i < n; i++)
-            for (int j = 0; j < n; j++)
-                blocks[i][j] = in.readInt();
-        Board initial = new Board(blocks);
-        // StdOut.println(initial.dimension());
-        // StdOut.println(initial.hamming());
+//        In in = new In(args[0]);
+//        int n = in.readInt();
+//        int[][] blocks = new int[n][n];
+//        for (int i = 0; i < n; i++)
+//            for (int j = 0; j < n; j++)
+//                blocks[i][j] = in.readInt();
+//         Board initial = new Board(blocks);
+//     //    StdOut.println(initial.dimension());
+//         StdOut.println(initial.hamming());
         // StdOut.println(initial.manhattan());
         // StdOut.println(initial.isGoal());
-        Board result = initial;
-        StdOut.println(initial.twin());
+        // StdOut.println(initial.twin());
         // StdOut.println("-------");
         // StdOut.println(initial.equals(result));
         // StdOut.println(initial.neighbors());
